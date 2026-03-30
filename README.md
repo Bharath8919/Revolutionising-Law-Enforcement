@@ -1,22 +1,41 @@
-# Complaint-Registeration-dApp
- This is a project built to replicate FIR complaint filing system on the blockchain using NEXT.js, tailwind css and ThirdWeb.
- 
- # Screenshot of the dApp:
- 
-![dApp_screenshot_without_admin_panel](https://user-images.githubusercontent.com/107293201/202850138-419b8598-2ea7-4c0f-9604-ff43ffde42ee.png)
+# Decentralized FIR System
 
-# Project dependencies:
-yarn add @thirdweb-dev/react @thirdweb-dev/sdk ethers react-hot-toast
+A modern, role-based First Information Report (FIR) system simulating an immutable blockchain ledger using Spring Boot and AngularJS.
 
-# Steps to run this project:
-1. Git clone this repo
-2. Install the project dependencies
-3. Create a .env.local file inside the main folder
-4. Add a variable by the name: NEXT_PUBLIC_SMART_CONTRACT
-5. Deploy this contract directly from the this Thirdweb Link: http://bit.ly/3VeNU6h
-6. While deploying you will have to fill the constructor argument with an address for officer's address(suggestion: should be separate from deployer's address)
-7. Copy the smart contract address and assign it to NEXT_PUBLIC_SMART_CONTRACT that you had created
-8. Open terminal and run command: yarn dev
+## Features
+- **Frontend:** Premium UI using Bootstrap 5, glassmorphism CSS, and AngularJS.
+- **Backend:** Spring Boot REST APIs with JWT authentication and Spring Security.
+- **Role-based Access:** Differentiates between regular citizens and police administrators.
+- **Interactive Map:** Leaflet integration to show nearby police stations.
+- **Immutable Ledger simulation:** Backend architecture pre-integrated with Web3J for future Ethereum smart-contact connectivity, currently using a mocked configuration bean for immediate testing.
 
-⭐Give this repo a star if you found some value in it. 
-Thanks!
+## Prerequisites
+- Java 17+
+- Maven
+- A simple local server to serve the frontend (e.g., `npx serve`, Python `http.server`, or VSCode Live Server).
+
+## How to Run
+
+### 1. Run the Spring Boot Backend
+Navigate into the backend directory and run the Maven wrapper:
+```bash
+cd backend
+./mvnw spring-boot:run
+```
+*(The backend defaults to port 8080 and uses an in-memory H2 database. Default roles are auto-initialized).*
+
+### 2. Run the AngularJS Frontend
+You can serve the `frontend` folder using any static file server. 
+
+**Using Node (npx):**
+```bash
+cd frontend
+npx serve -p 3000
+```
+Open your browser at `http://localhost:3000` to start exploring the app.
+
+## Testing Setup
+1. Register a new user on the frontend and leave the "Admin" box unchecked.
+2. Register a second user and check the "Register as Police Admin" box.
+3. Log in as the user -> File an FIR -> View the interactive map.
+4. Log out -> Log in as the admin -> View all FIRs -> Change case statuses.

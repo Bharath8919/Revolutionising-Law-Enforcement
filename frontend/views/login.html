@@ -1,0 +1,158 @@
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card glass-card border-0 shadow-lg mt-5">
+            <div class="card-header bg-transparent border-0 pt-4 pb-0 text-center">
+                <h3 class="fw-bold mb-3 text-dark">Portal Access</h3>
+                <ul class="nav nav-pills nav-justified mb-0" id="loginTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active fw-bold" id="citizen-tab" data-bs-toggle="pill" data-bs-target="#citizen" type="button" role="tab" aria-controls="citizen" aria-selected="true"><i class="fas fa-user mb-1 d-block fa-lg"></i>Citizen Portal</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link fw-bold" id="police-tab" data-bs-toggle="pill" data-bs-target="#police" type="button" role="tab" aria-controls="police" aria-selected="false"><i class="fas fa-user-shield mb-1 d-block fa-lg"></i>Police Portal</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body p-4 p-md-5">
+                <div class="alert alert-danger" ng-if="errorMessage">{{ errorMessage }}</div>
+                
+                <div class="tab-content" id="loginTabsContent">
+                    <!-- Citizen Login -->
+                    <div class="tab-pane fade show active" id="citizen" role="tabpanel" aria-labelledby="citizen-tab">
+                        <div class="text-center mb-4">
+                            <p class="text-muted">Login to file reports and track your FIRs</p>
+                        </div>
+                        <form ng-submit="login(false)">
+                            <div class="mb-3">
+                                <label class="form-label text-muted fw-semibold">Citizen ID / Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"><i class="fas fa-user text-primary"></i></span>
+                                    <input type="text" class="form-control border-start-0 ps-0" ng-model="credentials.username" required placeholder="Enter username">
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label text-muted fw-semibold">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"><i class="fas fa-lock text-primary"></i></span>
+                                    <input ng-attr-type="{{ showPassword ? 'text' : 'password' }}" class="form-control border-start-0 border-end-0 ps-0" ng-model="credentials.password" required placeholder="Enter password">
+                                    <span class="input-group-text bg-light border-start-0 cursor-pointer" ng-click="togglePassword()">
+                                        <i class="fas" ng-class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                    </span>
+                                </div>
+                                <div class="text-end mt-1">
+                                    <button type="button" ng-click="forgotPassword()" class="btn btn-link btn-sm p-0 text-decoration-none text-muted fst-italic">Forgot Password?</button>
+                                </div>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary-custom text-white py-2 shadow-sm fw-bold">
+                                    <i class="fas fa-sign-in-alt me-2"></i> Citizen Login
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Police Admin Login -->
+                    <div class="tab-pane fade" id="police" role="tabpanel" aria-labelledby="police-tab">
+                        <div class="text-center mb-4">
+                            <p class="text-muted">Authorized Police Personnel Only</p>
+                        </div>
+                        <form ng-submit="login(true)">
+                            <div class="mb-3">
+                                <label class="form-label text-muted fw-semibold">Badge Number / Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"><i class="fas fa-id-badge text-dark"></i></span>
+                                    <input type="text" class="form-control border-start-0 ps-0" ng-model="credentials.username" required placeholder="Enter badge/username">
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label text-muted fw-semibold">Secure Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"><i class="fas fa-key text-dark"></i></span>
+                                    <input ng-attr-type="{{ showPassword ? 'text' : 'password' }}" class="form-control border-start-0 border-end-0 ps-0" ng-model="credentials.password" required placeholder="Enter password">
+                                    <span class="input-group-text bg-light border-start-0 cursor-pointer" ng-click="togglePassword()">
+                                        <i class="fas" ng-class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                    </span>
+                                </div>
+                                <div class="text-end mt-1">
+                                    <button type="button" ng-click="forgotPassword()" class="btn btn-link btn-sm p-0 text-decoration-none text-muted fst-italic">Report Lost Admin Credentials?</button>
+                                </div>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-dark text-white py-2 shadow-sm fw-bold">
+                                    <i class="fas fa-shield-alt me-2"></i> Police Login
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4 border-top pt-4">
+                    <p class="mb-0 text-muted">Don't have an account? <a href="#!/register" class="text-decoration-none fw-bold text-primary">Register Here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Forgot Password Modal -->
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-primary text-white border-0">
+                <h5 class="modal-title fw-bold"><i class="fas fa-key me-2"></i> Reset Access</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div ng-if="resetStep === 1">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-envelope-open-text fa-3x text-primary shadow-sm rounded-circle p-3 bg-light"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark text-center">Reset Account Access</h5>
+                    <p class="text-muted small text-center px-3 mb-4">
+                        Enter the email address associated with your account. We will dispatch a secure OTP for verification.
+                    </p>
+                    <div class="mb-4">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="fas fa-at text-primary"></i></span>
+                            <input type="email" class="form-control border-start-0 ps-0" ng-model="resetData.email" placeholder="registered@email.com" required>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary w-100 fw-bold py-2" ng-click="sendOTP()">
+                        <i class="fas fa-paper-plane me-2"></i> Send Secure OTP
+                    </button>
+                </div>
+
+                <div ng-if="resetStep === 2">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-user-shield fa-3x text-success shadow-sm rounded-circle p-3 bg-light"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark text-center">Verify Identity</h5>
+                    <p class="text-muted small text-center px-3 mb-4">
+                        Enter the 6-digit code sent to your email and choose a new secure password.
+                    </p>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">Verification Code</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="fas fa-lock-open text-success"></i></span>
+                            <input type="text" class="form-control border-start-0 ps-0 fw-bold letter-spacing-lg" ng-model="resetData.otp" placeholder="Enter OTP" maxlength="6">
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-muted">New Secure Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="fas fa-key text-success"></i></span>
+                            <input type="password" class="form-control border-start-0 ps-0" ng-model="resetData.newPassword" placeholder="Minimum 8 characters">
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-success w-100 fw-bold py-2 text-white" ng-click="verifyAndReset()">
+                        <i class="fas fa-check-circle me-2"></i> Update Password & Access
+                    </button>
+                    <div class="text-center mt-3">
+                        <button type="button" class="btn btn-link btn-sm text-muted text-decoration-none" ng-click="resetStep = 1">
+                            <i class="fas fa-arrow-left me-1"></i> Back to Email
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

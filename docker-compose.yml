@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  backend-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: firdb
+    ports:
+      - "3306:3306"
+
+  # Optional real blockchain node placeholder
+  # ganache:
+  #   image: trufflesuite/ganache-cli:latest
+  #   ports:
+  #     - "8545:8545"
+  #   command: ["-d", "-m", "candy maple cake sugar pudding cream honey rich smooth crumble sweet treat"]

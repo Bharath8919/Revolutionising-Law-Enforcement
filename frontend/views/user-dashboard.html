@@ -1,0 +1,203 @@
+<div class="row">
+    <!-- System Broadcast Notifications -->
+    <div class="col-12 mb-4" ng-if="systemAlerts.length > 0">
+        <div ng-repeat="alert in systemAlerts" class="alert alert-danger border-0 shadow-lg animate__animated animate__pulse animate__infinite d-flex align-items-center py-3">
+            <div class="flex-shrink-0 me-3">
+                <i class="fas fa-bullhorn fa-2x"></i>
+            </div>
+            <div class="flex-grow-1">
+                <h6 class="fw-bold mb-1">SYSTEM COMMAND BROADCAST</h6>
+                <p class="mb-0">{{ alert.message }}</p>
+                <small class="opacity-75">{{ alert.timestamp | date:'medium' }}</small>
+            </div>
+            <button type="button" class="btn-close" ng-click="systemAlerts.splice($index, 1)" aria-label="Close"></button>
+        </div>
+    </div>
+
+    <!-- File FIR Section -->
+    <div class="col-md-4 mb-4">
+        <div class="card glass-card border-0 shadow-sm h-100">
+            <div class="card-header bg-transparent border-0 pt-4 pb-0">
+                <h4 class="fw-bold text-primary"><i class="fas fa-edit me-2"></i> File New FIR</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger" ng-if="error">{{ error }}</div>
+                <div class="alert alert-success" ng-if="success">{{ success }}</div>
+
+                <!-- Emergency SOS Panic Button -->
+                <div class="mb-4 text-center p-3 bg-danger bg-opacity-10 border border-danger border-opacity-25 rounded shadow-sm">
+                    <h6 class="fw-bold text-danger mb-3"><i class="fas fa-exclamation-triangle me-1"></i> Emergency SOS Protocol</h6>
+                    <button class="btn btn-danger btn-lg w-100 fw-bold shadow pulse-btn" ng-click="triggerEmergency()">
+                        <i class="fas fa-radiation fa-spin me-2"></i> TRIGGER PANIC SIGNAL
+                    </button>
+                    <p class="small text-muted mt-2 mb-0">Captures GPS coordinates & Alerts Headquarters</p>
+                </div>
+
+                <form ng-submit="submitFIR()">
+                    <div class="mb-3">
+                        <label class="form-label text-muted fw-semibold">Severity / Category</label>
+                        <select class="form-select bg-light border-0" ng-model="fir.category">
+                            <option value="">Select Category...</option>
+                            <option value="Theft">Theft / Burglary</option>
+                            <option value="Assault">Assault</option>
+                            <option value="Cybercrime">Cybercrime</option>
+                            <option value="Missing Person">Missing Person</option>
+                            <option value="Other">Other Emergency</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted fw-semibold">Incident Description</label>
+                        <textarea class="form-control bg-light border-0 shadow-none" rows="3" ng-model="fir.description" required placeholder="Describe the incident clearly..."></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label text-muted fw-semibold">Location / Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-0"><i class="fas fa-map-marker-alt text-danger"></i></span>
+                            <input type="text" class="form-control bg-light border-0 shadow-none" ng-model="fir.location" required placeholder="Exact location">
+                        </div>
+                    </div>
+
+                    <!-- Mock Evidence Upload -->
+                    <div class="mb-4">
+                        <label class="form-label text-muted fw-semibold"><i class="fas fa-paperclip me-1"></i> Attach Evidence</label>
+                        <input class="form-control bg-light border-0 form-control-sm" type="file" multiple>
+                        <small class="text-muted" style="font-size: 0.75rem;">Support for Images/Video (max 50MB)</small>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary-custom w-100 text-white fw-bold shadow-sm py-2">
+                        <i class="fas fa-paper-plane me-2"></i> Submit Securely to Blockchain
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- My FIRs Section -->
+    <div class="col-md-8">
+        <div class="card glass-card border-0 shadow-sm h-100">
+            <div class="card-header bg-transparent border-0 pt-4 pb-2 d-flex justify-content-between align-items-center flex-wrap">
+                <h4 class="fw-bold text-dark mb-0"><i class="fas fa-history me-2 text-primary"></i> My Reported Cases</h4>
+                <div class="d-flex gap-2 mt-2 mt-md-0">
+                    <div class="input-group input-group-sm rounded-pill shadow-sm overflow-hidden" style="width: 200px;">
+                        <span class="input-group-text bg-white border-0"><i class="fas fa-search text-muted"></i></span>
+                        <input type="text" class="form-control border-0 bg-white shadow-none ps-0" placeholder="Search cases..." ng-model="searchCase">
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary rounded-circle" ng-click="loadFIRs()" title="Refresh List"><i class="fas fa-sync-alt"></i></button>
+                </div>
+            </div>
+            
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light text-muted">
+                            <tr>
+                                <th>Case ID</th>
+                                <th>Category / Desc</th>
+                                <th>Location</th>
+                                <th>Date Filed</th>
+                                <th>Status</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="fir in firs | filter:searchCase | orderBy:'-filedAt'">
+                                <td><strong class="text-primary">#{{ fir.id }}</strong></td>
+                                <td>
+                                    <span class="badge bg-secondary mb-1" ng-if="fir.category">{{ fir.category }}</span><br>
+                                    <span class="text-truncate d-inline-block" style="max-width: 150px;" title="{{fir.description}}">{{ fir.description }}</span>
+                                </td>
+                                <td><small class="text-muted"><i class="fas fa-map-pin me-1 text-danger"></i>{{ fir.location }}</small></td>
+                                <td>{{ fir.filedAt | date:'medium' }}</td>
+                                <td>
+                                    <span class="badge rounded-pill" 
+                                          ng-class="{
+                                              'bg-warning text-dark': fir.status === 'OPEN',
+                                              'bg-info': fir.status === 'IN_PROGRESS',
+                                              'bg-success': fir.status === 'CLOSED'
+                                          }">
+                                        <i class="fas" ng-class="{'fa-folder-open': fir.status === 'OPEN', 'fa-spinner fa-spin': fir.status === 'IN_PROGRESS', 'fa-check-circle': fir.status === 'CLOSED'}"></i>
+                                        {{ fir.status }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-light text-primary border shadow-sm" ng-click="viewDetails(fir)" title="Detailed View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr ng-if="firs.length === 0">
+                                <td colspan="6" class="text-center py-5 text-muted">
+                                    <i class="fas fa-folder-open fa-3x mb-3 text-light"></i><br>
+                                    You haven't filed any FIRs yet.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Citizen Case Details Modal -->
+<div class="modal fade" id="caseDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" ng-if="selectedFIR">
+            <div class="modal-header bg-light border-0">
+                <h5 class="modal-title fw-bold"><i class="fas fa-file-contract text-primary me-2"></i> Case #{{ selectedFIR.id }} Detail Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-4">
+                    <div class="col-md-8">
+                        <h6 class="text-muted text-uppercase fw-bold" style="font-size: 0.8rem;">Incident Statement</h6>
+                        <p class="fs-5">{{ selectedFIR.description }}</p>
+                        
+                        <h6 class="text-muted text-uppercase fw-bold mt-4" style="font-size: 0.8rem;">Location Map Data</h6>
+                        <p><i class="fas fa-map-marker-alt text-danger me-2"></i>{{ selectedFIR.location }}</p>
+
+                        <div class="mt-4 p-3 bg-white rounded border shadow-sm">
+                            <h6 class="fw-bold mb-3"><i class="fas fa-paperclip text-primary me-2"></i> Evidence Locker</h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a ng-repeat="ev in selectedFIR.evidence" href="{{ getDownloadUrl(ev) }}" target="_blank" class="badge bg-light text-dark border p-2 d-flex align-items-center text-decoration-none hover-shadow" title="Click to Download">
+                                    <i class="fas fa-file-download me-2 text-primary"></i> {{ ev.fileName }}
+                                </a>
+                                <div ng-if="!selectedFIR.evidence || selectedFIR.evidence.length === 0" class="text-muted small italic">No evidence uploaded yet.</div>
+                            </div>
+                            <div class="mt-3">
+                                <label class="btn btn-sm btn-outline-primary fw-bold">
+                                    <i class="fas fa-plus me-1"></i> Add Evidence
+                                    <input type="file" style="display: none;" onchange="angular.element(this).scope().handleFileUpload(this, angular.element(this).scope().selectedFIR)">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-light border-0 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="fw-bold mb-3">Case Metadata</h6>
+                                <p class="mb-1 small"><strong>Status:</strong> 
+                                    <span class="badge" ng-class="{'bg-warning text-dark': selectedFIR.status === 'OPEN', 'bg-info': selectedFIR.status === 'IN_PROGRESS', 'bg-success': selectedFIR.status === 'CLOSED'}">{{ selectedFIR.status }}</span>
+                                </p>
+                                <p class="mb-1 small"><strong>Filed:</strong> {{ selectedFIR.filedAt | date:'mediumDate' }}</p>
+                                <p class="mb-1 small"><strong>Time:</strong> {{ selectedFIR.filedAt | date:'shortTime' }}</p>
+                                <hr>
+                                <h6 class="fw-bold mb-2 text-success"><i class="fas fa-link me-1"></i> Blockchain Integrity</h6>
+                                <p class="mb-0 small text-break text-muted" style="font-size: 0.7rem;">
+                                    TxHash: {{ selectedFIR.blockchainTxHash || '0x' + (selectedFIR.id * 123456789).toString(16) + 'a1b2c3d4e5f6g7h8i9j0' }}
+                                    <br><span class="badge bg-success mt-1"><i class="fas fa-check-double"></i> Verified on Ledger</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 bg-light">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary"><i class="fas fa-print me-2"></i>Download Official PDF</button>
+            </div>
+        </div>
+    </div>
+</div>
